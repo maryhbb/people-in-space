@@ -1,28 +1,43 @@
 const peopleInSpace = document.querySelector("[data-js='people-in-space']");
 const listOfPeople = document.querySelector("[data-js='list-of-people']");
+const allButton = document.querySelector("[data-js='all-button']");
+const issButton = document.querySelector("[data-js='iss-button']");
+const tiangongButton = document.querySelector("[data-js='tiangong-button']");
+
+// function to creating list on Dom
+function updatePeopleList(peopleArray) {
+  peopleArray.forEach((person) => {
+    const listElement = document.createElement("li");
+    listElement.textContent = person.name;
+    listOfPeople.appendChild(listElement);
+    peopleInSpace.textContent = peopleArray.length;
+  });
+}
 
 async function getPeopleInSpace() {
   const response = await fetch("http://api.open-notify.org/astros.json");
-
   const data = await response.json();
 
-  console.log("data: ", data);
-  peopleInSpace.textContent = data.number;
+  updatePeopleList(data.people);
 
-  console.log("People Names:: ", data.people);
-
-  data.people.forEach((people) => {
-    const listElement = document.createElement("li");
-    listElement.textContent = people.name;
-    listOfPeople.appendChild(listElement);
+  issButton.addEventListener("click", () => {
+    const issPeople = data.people.filter((person) => person.craft === "ISS");
+    listOfPeople.innerHTML = "";
+    updatePeopleList(issPeople);
   });
 
-  // data.people (an array)
-  // loop over them (using forEach)
-  // for each item in the array use
-  // document.createElement("li")
-  // add the name of the person to the element
-  // append element to the dom
+  tiangongButton.addEventListener("click", () => {
+    const tiangongPeople = data.people.filter(
+      (person) => person.craft === "Tiangong"
+    );
+    listOfPeople.innerHTML = "";
+    updatePeopleList(tiangongPeople);
+  });
+
+  allButton.addEventListener("click", () => {
+    listOfPeople.innerHTML = "";
+    updatePeopleList(data.people);
+  });
 }
 
 getPeopleInSpace();
