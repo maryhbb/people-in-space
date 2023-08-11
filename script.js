@@ -1,4 +1,5 @@
 const peopleInSpace = document.querySelector("[data-js='people-in-space']");
+const listOfPeople = document.querySelector("[data-js='list-of-people']");
 
 async function getPeopleInSpace() {
   const response = await fetch("http://api.open-notify.org/astros.json");
@@ -7,6 +8,14 @@ async function getPeopleInSpace() {
 
   console.log("data: ", data);
   peopleInSpace.textContent = data.number;
+
+  console.log("People Names:: ", data.people);
+
+  data.people.forEach((people) => {
+    const listElement = document.createElement("li");
+    listElement.textContent = people.name;
+    listOfPeople.appendChild(listElement);
+  });
 
   // data.people (an array)
   // loop over them (using forEach)
